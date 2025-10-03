@@ -15,6 +15,15 @@ export const AuthProvider = ({ children }) => {
       if (!isMounted) return;
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // 🟢 Cleanup hash from OAuth redirect
+      if (window.location.hash.includes("access_token")) {
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      }
     });
 
     // Subscribe to auth changes
@@ -23,6 +32,15 @@ export const AuthProvider = ({ children }) => {
         if (!isMounted) return;
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // 🟢 Cleanup hash again if it appears after auth event
+        if (window.location.hash.includes("access_token")) {
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          );
+        }
       }
     );
 
